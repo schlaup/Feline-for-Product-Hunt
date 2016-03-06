@@ -25,24 +25,23 @@ const GoogleAnalytics = require('react-native-google-analytics-bridge');
 var PostWidget = require('./PostWidget');
 var DrawerWidget = require('./DrawerWidget');
 
-var PostsMain = React.createClass({
+var Search = React.createClass({
 
     getInitialState: function() {
         return {
-            loaded: false,
+            loaded: true,
             network: true,
+            posts: [],
             access_token: undefined,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
             }),
-            pass_date: this.props.date,
-            category: this.props.category ? this.props.category : 'tech'
         };
     },
 
     componentDidMount: function() {
-        this.fetchData();
-        GoogleAnalytics.trackScreenView(this.state.category.toUpperCase() + ' Products Page');
+        // this.fetchData();
+        GoogleAnalytics.trackScreenView('Search Page');
     },
 
     fetchData: function() {
@@ -82,30 +81,7 @@ var PostsMain = React.createClass({
     },
 
     getPosts: function() {
-        if(this.state.pass_date) {
-            var today = new Date(this.state.pass_date);
-            var dd = today.getDate();
-            var mm = today.getMonth()+1; //January is 0!
-            var yyyy = today.getFullYear();
-            var day = yyyy+'-'+mm+'-'+dd;
-            var pass_day = yyyy+'/'+mm+'/'+dd;
-
-            this.setState({ date_text: today.toDateString(), date: pass_day });
-
-            var url = 'https://api.producthunt.com/v1/categories/'+this.state.category+'/posts?day=' + day;
-        } else {
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth()+1; //January is 0!
-            var yyyy = today.getFullYear();
-            var day = yyyy+'-'+mm+'-'+dd;
-            var pass_day = yyyy+'/'+mm+'/'+dd;
-
-            this.setState({ date_text: 'TODAY', date: pass_day });
-
-            var url = 'https://api.producthunt.com/v1/categories/'+this.state.category+'/posts?days_ago=0';
-        }
-
+        var url = 'https://api.producthunt.com/v1/categories/'+this.state.category+'/posts?day=' + day;
         var requestObj = {
             headers: {
                 'Accept': 'application/json',
@@ -141,27 +117,6 @@ var PostsMain = React.createClass({
         .done();
     },
 
-    _pickDate: function() {
-        this.props.navigator.push({
-            index: 3,
-            passProps: {date: this.state.date, category: this.state.category}
-        });
-    },
-
-    searchPage: function() {
-        this.props.navigator.push({
-            index: 6,
-        });
-    },
-
-    _renderHeader: function() {
-        return (
-            <View style={{flex: 1, paddingTop: 3, paddingBottom: 3, backgroundColor: '#3F51B5'}}>
-            <Text style={styles.date}>{this.state.category.toUpperCase()} - {this.state.date_text}</Text>
-            </View>
-        )
-    },
-
     render: function() {
 
         if (!this.state.loaded) {
@@ -188,7 +143,7 @@ var PostsMain = React.createClass({
             ref={(ref) => this.drawer = ref }>
 
             <MaterialToolbar
-            title={'Products'}
+            title={'Search'}
             icon='menu'
             onIconPress={() => { this.drawer.openDrawer() }}
             actions={[{
@@ -197,7 +152,7 @@ var PostsMain = React.createClass({
             },
             {
                 icon: 'search',
-                onPress: () => {this.searchPage()}
+                onPress: () => {this.getPosts()}
             }]}
             overrides={{backgroundColor: '#3F51B5'}}
             />
@@ -206,13 +161,12 @@ var PostsMain = React.createClass({
             dataSource={this.state.dataSource}
             renderRow={this.renderPosts}
             style={styles.listView}
-            renderHeader={this._renderHeader}
             />
 
             </DrawerLayoutAndroid>
 
             </View>
-        );
+            );
     },
 
     renderLoadingView: function() {
@@ -222,7 +176,7 @@ var PostsMain = React.createClass({
             <ProgressBar styleAttr="Large" color="#3F51B5" />
             </Image>
             </View>
-        );
+            );
     },
 
     renderNetworkError: function() {
@@ -231,7 +185,7 @@ var PostsMain = React.createClass({
             <Icon name="exclamation-circle" size={50} color="#000000" />
             <Text>Unable to Connect to Server</Text>
             </View>
-        );
+            );
     },
 
     renderNoPosts: function() {
@@ -244,22 +198,17 @@ var PostsMain = React.createClass({
             renderNavigationView={() => navigationView}
             ref={(ref) => this.drawer = ref }>
             <MaterialToolbar
-            title={'Products'}
+            title={'Search'}
             icon='menu'
             onIconPress={() => { this.drawer.openDrawer() }}
-            actions={[{
-                icon: 'date-range',
-                onPress: () => {this._pickDate()}
-            }]}
             overrides={{backgroundColor: '#3F51B5'}}
             />
             <View style={{flex: 1, marginTop: 52, paddingTop: 10, paddingBottom: 3, height: 20, backgroundColor: '#3F51B5'}}>
-            <Text style={styles.date}>{this.state.category.toUpperCase()} - {this.state.date_text}</Text>
             <Text style={styles.empty}>NO POSTS</Text>
             </View>
             </DrawerLayoutAndroid>
             </View>
-        );
+            );
     },
 
     _loadPost: function(post) {
@@ -276,7 +225,7 @@ var PostsMain = React.createClass({
             <PostWidget post={post} navigator={this.props.navigator} />
             </View>
             </TouchableHighlight>
-        );
+            );
     },
 });
 
@@ -309,4 +258,4 @@ var styles = StyleSheet.create({
     },
 });
 
-module.exports = PostsMain;
+module.exports = Search;
