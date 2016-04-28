@@ -3,6 +3,13 @@ package com.product_hunt;
 import android.content.Intent;
 
 import com.facebook.react.ReactActivity;
+import com.oblador.vectoricons.VectorIconsPackage;
+import cl.json.RNSharePackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.slowpath.hockeyapp.RNHockeyAppPackage;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
+import com.microsoft.codepush.react.CodePush;
+import com.chymtt.reactnativecalendar.CalendarPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
@@ -56,6 +63,13 @@ public class MainActivity extends ReactActivity {
 
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new VectorIconsPackage(),
+            new RNSharePackage(),
+            new ReactNativePushNotificationPackage(),
+            new RNHockeyAppPackage(),
+            new GoogleAnalyticsBridgePackage(),
+            new CodePush(null, this, BuildConfig.DEBUG),
+            new CalendarPackage(),
               this._codePush.getReactPackage(),
               new VectorIconsPackage(),
                 new StatusBarPackage(this),
