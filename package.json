@@ -6,7 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "react": "^15.0.1",
+    "react": "^0.14.5",
     "react-native": "^0.24.1",
     "react-native-android-statusbar": "^0.1.2",
     "react-native-calendar-android": "0.0.3",
