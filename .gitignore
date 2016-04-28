@@ -33,7 +33,8 @@ local.properties
 node_modules/
 npm-debug.log
 
-Utils/keys.js
-android/app/build.gradle
-android/app/techulus.jks
-release
+# BUCK
+buck-out/
+\.buckd/
+android/app/libs
+android/keystores/debug.keystore
